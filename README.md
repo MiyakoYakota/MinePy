@@ -5,8 +5,8 @@ A Cross-Platform Minecraft Checker - Designed for Online Shops
 This is a tool used for checking Minecraft accounts and checking if they work.
 
 ## Should I use this for Cracking Accounts?
-No. It's lacking some pretty common features, Namely: 
-- Multi-Threading
+Maybe. It's lacking some pretty common features, Namely: 
+- ~~Multi-Threading~~ (Added with new update)
 - Large Combo Support (A limmitation of CSV's loader, will impliment this in the future)
 - A Fancy UI
 
@@ -20,4 +20,6 @@ Make another file called `proxies.txt` and place all your proxies in `IP:Port` f
 
 Run `pip install -r requirements.txt`
 
-And then start it with `python MinePy.py`
+Start it with `python MinePy.py`
+
+And specify the amount of threads you'd like to use.
