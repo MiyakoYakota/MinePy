@@ -48,7 +48,6 @@ def main():
     numThreads = input("How many threads would you like to use? ")
     freeze_support()
     numAccounts = range(len(email))
-    numProxies = len(IP)
 
     pool = Pool(numThreads)  # Start 4 threads
     pool.map(checkAccount, numAccounts) # Checky Checky
